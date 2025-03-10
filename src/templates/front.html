@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Amazon Product Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        .container img {
+            max-width: 60%;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #FF5722;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        input, textarea, button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+        button {
+            background-color: #FF5722;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #e64a19;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{ image }}" alt="Amazon Logo">
+        <h1>Amazon Product Classification</h1>
+        <div id="purpose">
+            <p>Welcome to <span style="color: #FF5722;">Amazon Product Classification</span>. 
+               Enter the following fields to get the main category of the product.</p>
+        </div>        
+        <form id="product-form">
+            <input type="text" id="brand" placeholder="Brand of the product" required>
+            <textarea id="description" placeholder="Description of the product" required></textarea>
+            <textarea id="feature" placeholder="Format features of the product" required></textarea>
+            <textarea id="image" placeholder="URL of product images" required></textarea>
+            <input type="text" id="price" placeholder="Price in US dollars">
+            <input type="text" id="title" placeholder="Name of the product" required>
+            <button type="button" onclick="predict()">Get Category</button>
+        </form>
+        <p class="result" id="result"></p>
+    </div>
+
+    <script>
+        async function predict() {
+            var brand = document.getElementById("brand").value;
+            var description = document.getElementById("description").value.split('\n');
+            var feature = document.getElementById("feature").value.split('\n');
+            var image = document.getElementById("image").value.split('\n');
+            var price = document.getElementById("price").value;
+            var title = document.getElementById("title").value;
+
+            var data = {
+                brand: brand,
+                description: description,
+                feature: feature,
+                image: image,
+                price: price,
+                title: title
+            };
+
+            try {
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                document.getElementById("result").textContent = "Main category: " + result.main_cat;
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("result").textContent = "An error occurred. Please try again.";
+            }
+        }
+    </script>
+</body>
+</html>

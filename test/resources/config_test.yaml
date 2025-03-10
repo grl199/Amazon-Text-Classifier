@@ -1,0 +1,48 @@
+
+
+general:
+  data_path: 'data/amz_products_small.jsonl.gz'
+  log_level: INFO
+  log_format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  save_model: True
+
+llm:
+  model_path: 'test/resources/model/bert-tiny_test'
+  tokenizer_path: 'test/resources/model/bert-tiny_tokenizer_test'
+
+  batch_size_for_model_evaluation: 16.0
+  sample_size_for_training: 0.0001
+  sample_size_for_model_evaluation: 0.001
+
+  init_args:
+    cat_cols: ['brand', 'description', 'feature','image', 'title']
+    num_cols: []
+    label_col: main_cat
+    model_name: prajjwal1/bert-tiny
+
+  training_args:
+    evaluation_strategy: "epoch"
+    learning_rate: 0.0001
+    per_device_train_batch_size: 128.0
+    per_device_eval_batch_size: 128.0
+    num_train_epochs: 5.0
+    weight_decay: 0.001
+
+tfidf:
+  model_path: 'test/resources/model/saved_model_test.pkl'
+  tokenizer_path: 
+
+  batch_size_for_model_evaluation: 8.0
+  sample_size_for_training: 0.0001
+  sample_size_for_model_evaluation: 1.0
+
+  init_args:
+    cat_cols: ['brand', 'description', 'feature','image', 'title']
+    num_cols: ['price']
+    label_col: main_cat
+    model_name: 'tfidf'
+
+
+  training_args:
+    max_features: 500000.0
+    stop_words: english

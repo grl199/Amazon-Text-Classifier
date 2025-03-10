@@ -1,0 +1,45 @@
+general:
+  data_path: 'data/amz_products_small.jsonl.gz'  # Path to the dataset file (compressed JSON lines format)
+  log_level: INFO  # Logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL)
+  log_format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"  # Format for logging messages
+  save_model: False  # Whether to save the trained model after training
+
+llm:  # Configuration for the LLM (Large Language Model)
+  model_path: 'model/bert-tiny'  # Path to the pre-trained model
+  tokenizer_path: 'model/bert-tiny_tokenizer'  # Path to the tokenizer for the model
+
+  batch_size_for_model_evaluation: 16.0  # Batch size used during model evaluation
+  sample_size_for_training: 0.1  # Fraction of the dataset to be used for training (10%)
+  sample_size_for_model_evaluation: 0.001  # Fraction of the dataset to be used for evaluation (0.1%)
+
+  init_args:  # Model initialization arguments
+    cat_cols: ['brand', 'description', 'feature', 'image', 'title']  # Categorical features used by the model
+    num_cols: []  # Numerical features (empty in this case)
+    label_col: main_cat  # Column used as the target label for classification
+    model_name: prajjwal1/bert-tiny  # Model identifier (Hugging Face model or local model)
+
+  training_args:  # Training parameters for fine-tuning the model
+    evaluation_strategy: "epoch"  # When to run evaluation (e.g., 'steps' or 'epoch')
+    learning_rate: 0.0001  # Learning rate for model training
+    per_device_train_batch_size: 128.0  # Batch size for training per device (e.g., GPU)
+    per_device_eval_batch_size: 128.0  # Batch size for evaluation per device
+    num_train_epochs: 5.0  # Number of training epochs
+    weight_decay: 0.001  # Weight decay for regularization (prevents overfitting)
+
+tfidf:  # Configuration for the TF-IDF (Text-based Model)
+  model_path: 'model/saved_model.pkl'  # Path to the saved TF-IDF model
+  tokenizer_path:  # (Empty) Path to the tokenizer for TF-IDF, if applicable
+
+  batch_size_for_model_evaluation: 8.0  # Batch size used during TF-IDF model evaluation
+  sample_size_for_training: 0.001  # Fraction of the dataset to be used for TF-IDF training (0.1%)
+  sample_size_for_model_evaluation: 1.0  # Fraction of dataset used for evaluation (100%)
+
+  init_args:  # Initialization arguments for the TF-IDF model
+    cat_cols: ['brand', 'description', 'feature', 'image', 'title']  # Categorical features used for text processing
+    num_cols: ['price']  # Numerical features included in the model
+    label_col: main_cat  # Column used as the target label for classification
+    model_name: 'tfidf'  # Model identifier (used for saving/loading)
+
+  training_args:  # Training parameters for TF-IDF
+    max_features: 500000.0  # Maximum number of features for TF-IDF vectorization
+    stop_words: english  # Stop words to remove from text processing (English)
